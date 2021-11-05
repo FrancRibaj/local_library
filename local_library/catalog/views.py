@@ -4,6 +4,7 @@ from .models import Book, Author, BookInstance, Genre
 
 # Create your views here.
 from .models import Book, Author, BookInstance, Genre
+from django.views import generic 
 
 def index(request):
     """View function for home page of site."""
@@ -31,4 +32,9 @@ def index(request):
 def hello(request):
     return HttpResponse('Hello!!!')
 
+class BookListView(generic.ListView):
+    model = Book
+    context_object_name = 'my_book_list'
+    template_name = "books.html"
+    queryset = Book.objects.all()
     
