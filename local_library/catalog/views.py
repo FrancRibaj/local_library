@@ -5,7 +5,10 @@ from .models import Book, Author, BookInstance, Genre
 # Create your views here.
 from .models import Book, Author, BookInstance, Genre
 from django.views import generic 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+@login_required
 def index(request):
     """View function for home page of site."""
     num_visits = request.session.get('num_visits', 0)
@@ -33,10 +36,11 @@ def index(request):
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
 
+
 def hello(request):
     return HttpResponse('Hello!!!')
 
-class BookListView(generic.ListView):
+class BookListView(LoginRequiredMixin ,generic.ListView):
     model = Book
     context_object_name = 'book_list'
     template_name = "books.html"
@@ -46,6 +50,7 @@ class BookDetailView(generic.DetailView):
     model = Book
     template_name = 'book_detail.html'
 
+@login_required
 def book_detail(request, pk):
     try:
         book = Book.objects.get(id=pk)
@@ -53,7 +58,7 @@ def book_detail(request, pk):
         raise Http404   
     return render(request, 'book_detail.html', context ={ 'book': book} )
 
-class AuthorsListView(generic.ListView):
+class AuthorsListView(LoginRequiredMixin, generic.ListView):
     model = Author
     template_name = 'authors.html'
 

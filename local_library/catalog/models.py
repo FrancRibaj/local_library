@@ -1,7 +1,11 @@
 import uuid
 from django.db import models
+from datetime import date
+
 
 # Create your models here.
+
+
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -11,6 +15,13 @@ class Author(models.Model):
     class Meta:
         ordering = ['last_name', 'first_name']
         db_table = 'author'
+
+    @property
+    def is_overdue(self):
+        if self.due_back and date.today() > self.due_back:
+            return True
+        return False
+
     
     def __str__(self):
         
@@ -62,9 +73,15 @@ class BookInstance(models.Model):
         default='m',
         help_text='Book availability',
     )
-
+    borrower = models.ForeignKey('accounts.CustomUser', on_delete = models.SET_NULL, null=True, blank =True)
     class Meta:
         ordering = ['due_back']
+
+    @property
+    def is_overdue(self):
+        if self.due_back and self.status == 'o' and date.today() > self.due_back:
+            return True
+        return False
 
     def __str__(self):
         """String for representing the Model object."""
