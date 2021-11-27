@@ -1,5 +1,6 @@
 from django.http.response import Http404, HttpResponse 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from catalog.forms import BookModelForm
 from catalog.models import Book, Author, BookInstance, Genre
 
 # Create your views here.
@@ -24,3 +25,15 @@ def book_detail(request, pk):
     except Book.DoesNotExist:
         raise Http404   
     return render(request, 'book_detail.html', context ={ 'book': book} )
+
+
+def create_book(request):
+    if request.method == 'POST':
+        form =BookModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('books')
+    else:
+        form = BookModelForm()
+        context =  {'form':form}
+        return render(request, 'create_book.html', context)
