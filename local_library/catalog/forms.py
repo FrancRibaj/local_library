@@ -31,12 +31,16 @@ class BookModelForm(forms.ModelForm):
         fields = ('title', 'isbn', 'author', 'summary','genre')
 
 
-class AuthorForm(forms.ModelForm):
+class AuthorForm(forms.Form):
 
     first_name =forms.CharField(max_length=100)
-    last_name = forms. CharField(max_length=100)
-    date_of_birth = forms.  DateField(max_length=False,widget=forms.widgets.DateInput(attrs={'type': 'date'})
-    date_of_death = forms.DateField(max_length= False,widget=forms.widgets.DateInput(attrs={'type': 'date'})
+    last_name = forms.CharField(max_length=100)
+
+# Line 38 dhe 39 kam hequr para widget max_length=False
+
+    date_of_birth = forms.DateField(required=False,widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    date_of_death = forms.DateField(required=False,widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+
     def clean_date_of_death(self):
         date_of_birth = self.cleaned_data['date_of_birth']
         date_of_death= self.cleaned_data['date_of_death']
